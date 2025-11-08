@@ -52,9 +52,9 @@ CREATE TABLE liker (
     id_like     INTEGER PRIMARY KEY,
     date_like   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     id_user     INTEGER NOT NULL,
-    id_activite          INTEGER NOT NULL,
+    id_activite         INTEGER NOT NULL,
     FOREIGN KEY (id_user) REFERENCES utilisateur(id_user),
-    FOREIGN KEY (id_activite) REFERENCES activite(id_activite)
+    FOREIGN KEY (id_user) REFERENCES activite(id_activite)
 );
 
 
