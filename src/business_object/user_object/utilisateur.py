@@ -144,10 +144,8 @@ class Utilisateur(Base):
 
         else:
             raise ValueError(f"Type d’activité inconnu: {type_activite}")
-
-def obtenir_statistiques(self, periode: str = None, sport: str = None):
-        """
-        Retourne les statistiques de l'utilisateur connecté.
+    def obtenir_statistiques(self, periode: str = None, sport: str = None) -> dict:
+        """Retourne les statistiques de l'utilisateur connecté.
 
         Parameters
         ----------
@@ -159,7 +157,7 @@ def obtenir_statistiques(self, periode: str = None, sport: str = None):
         Returns
         -------
         dict
-            dictionnaire avec nombre d'activités, kilomètres et heures
+            Dictionnaire avec nombre d'activités, kilomètres et heures
         """
         stats = {
             "nombre_activites": Statistiques.nombre_activites(self, periode, sport),
