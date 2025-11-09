@@ -13,11 +13,12 @@
 
 -- Pour les tests directs en base (sans passer par l'API), hashes de 'password123':
 INSERT INTO utilisateur (nom_user, mail_user, mdp) VALUES
-('alice', 'alice@example.com', 'e10adc3949ba59abbe56e057f20f883e'),
-('bob', 'bob@example.com', 'e10adc3949ba59abbe56e057f20f883e'),
-('claire', 'claire@example.com', 'e10adc3949ba59abbe56e057f20f883e'),
-('david', 'david@example.com', 'e10adc3949ba59abbe56e057f20f883e'),
-('emma', 'emma@example.com', 'e10adc3949ba59abbe56e057f20f883e');
+('alice', 'alice@example.com', '1bf52fdbcef590cedf5cd8f250ea6c32f41d9e8901b396cdfa35076a6f054b47'),
+('bob', 'bob@example.com', '0e4ab4bf1898f84e75990143a01b3919d42b81ffa0e82921f16eb4c984f871c5'),
+('claire', 'claire@example.com', '495038a7ca6a49e2028fee5c49bdd4e8119e59f083b25125dd22233ea25b6161'),
+('david', 'david@example.com', '512019875b8784e5f428f6ea666f06d4ee6225dcfa255fec6a49a9ca361a16e5'),
+('emma', 'emma@example.com', 'f61f78d30111910aed172503eef6f962b2b3a534a8d26595de9cbc0b138aba12');
+
 
 
 -----------------------------------------------------
