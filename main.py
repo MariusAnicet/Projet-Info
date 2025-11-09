@@ -1,73 +1,79 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
-Main entry point pour l'application Striv API
+Point d'entree pour lancer l'API FastAPI via uvicorn.
 
-Ce fichier permet de lancer facilement l'application FastAPI avec uvicorn.
-
-Usage:
+Usage basique:
     python main.py
 
-Pour le développement avec rechargement automatique:
+Mode developpement (reload automatique):
     python main.py --dev
 """
 
-import sys, os
+import argparse
+import sys
 from pathlib import Path
 
 import uvicorn
 
-# Ajouter le dossier src au PYTHONPATH
+SRC_DIR = Path(__file__).resolve().parent / "src"
+sys.path.insert(0, str(SRC_DIR))
 
-sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 
-def main():
-    """Lance le serveur uvicorn avec l'application FastAPI"""
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Lancer le serveur Striv API.")
+    parser.add_argument("--host", default="0.0.0.0", help="Adresse d'ecoute (defaut: 0.0.0.0).")
+    parser.add_argument("--port", type=int, default=8001, help="Port d'ecoute (defaut: 8001).")
+    parser.add_argument(
+        "--reload",
+        action="store_true",
+        help="Active le rechargement automatique (equivalent au mode dev).",
+    )
+    parser.add_argument(
+        "--dev",
+        action="store_true",
+        help="Alias de --reload pour rester compatible avec les anciens scripts.",
+    )
+    return parser.parse_args()
 
-    # Vérifier si mode développement
-    dev_mode = "--dev" in sys.argv or "-d" in sys.argv
 
+def print_banner(host: str, port: int, dev_mode: bool) -> None:
+    mode_label = "Developpement" if dev_mode else "Production"
+    base_url = f"http://{host}:{port}"
     print("=" * 60)
-    print("🚀 Lancement de Striv API")
+    print(">> Lancement de Striv API")
     print("=" * 60)
-    print(f"Mode: {'Développement' if dev_mode else 'Production'}")
-    print("URL: http://localhost:8001")
-    print("Documentation: http://localhost:8001/docs")
-    print("ReDoc: http://localhost:8001/redoc")
+    print(f"Mode: {mode_label}")
+    print(f"URL: {base_url}")
+    print(f"Documentation: {base_url}/docs")
+    print(f"ReDoc: {base_url}/redoc")
     print("=" * 60)
-    print("\nUtilisateurs de test disponibles:")
-    print("  - alice / wonderland (admin)")
-    print("  - bob / builder (user)")
+    print("Utilisateurs de test:")
+    print("  - alice / wonderland")
+    print("  - bob / builder")
     print("=" * 60)
-    print("\nEndpoints de test disponibles:")
-    print("  - GET /health - Vérifier l'état de santé de l'API")
-    print("  - GET /test/complete-workflow - Tester toutes les fonctionnalités")
-    print("  - GET /me - Obtenir les informations de l'utilisateur connecté")
+    print("Endpoints utiles:")
+    print("  - GET /health")
+    print("  - GET /me")
+    print("  - GET /stats/*")
     print("=" * 60)
-    print("\nPour arrêter le serveur: Ctrl+C")
+    print("Ctrl+C pour stopper le serveur.")
     print("=" * 60)
     print()
 
-    # Configuration uvicorn
-    config = {
-        "app": "API:app",
-        "host": "0.0.0.0",
-        "port": 8001,
-    }
 
-    # Options supplémentaires en mode développement
+def main() -> None:
+    args = parse_args()
+    dev_mode = args.reload or args.dev
+    print_banner(args.host, args.port, dev_mode)
+
+    config = {"app": "API:app", "host": args.host, "port": args.port}
     if dev_mode:
-        config.update(
-            {
-                "reload": True,
-                "log_level": "debug",
-            }
-        )
+        config.update({"reload": True, "log_level": "debug"})
 
     try:
         uvicorn.run(**config)
     except KeyboardInterrupt:
-        print("\n\n🛑 Arrêt du serveur...")
-        print("✨ Au revoir!")
+        print("\nArret du serveur. A bientot !")
 
 
 if __name__ == "__main__":
