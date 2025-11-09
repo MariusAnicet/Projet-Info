@@ -1,10 +1,7 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
 
-from business_object.user_object.utilisateur import Utilisateur
-from dao.activity_model import ActivityModel  
-
+# Base locale pour ce module
 Base = declarative_base()
 
 
@@ -15,9 +12,6 @@ class Like(Base):
     id_user = Column(Integer, ForeignKey("utilisateur.id_user"), nullable=False)
     id_activite = Column(Integer, ForeignKey("activite.id"), nullable=False)
     date_like = Column(DateTime, nullable=False)
-
-    user = relationship("Utilisateur", back_populates="likes")
-    activite = relationship("Activite", back_populates="likes")
 
     def __init__(self, id_user, id_activite, date_like):
         self.id_user = id_user

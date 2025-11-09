@@ -1,6 +1,7 @@
 import secrets
 import gpxpy
 from service.commentaire_service import CommentaireService
+from service.statistiques_service import StatistiquesService
 from fastapi import Depends, FastAPI, HTTPException, status, UploadFile, File
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
@@ -446,6 +447,121 @@ async def upload_gpx(file: UploadFile = File(...)):
 # ============================================================================
 # LANCEMENT DE L'APPLICATION
 # ============================================================================
+
+# ============================================================================
+# HEALTH & ME
+# ============================================================================
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
+@app.get("/me")
+def me(current_user: dict = Depends(get_current_user)):
+    return current_user
+
+
+# ============================================================================
+# FEED, LISTING & STATS
+# ============================================================================
+
+@app.get("/users/{user_id}/activities")
+def list_user_activities(
+    user_id: int,
+    sport: str | None = None,
+    year: int | None = None,
+    month: int | None = None,
+    current_user: dict = Depends(get_current_user),
+):
+    if current_user["id"] != user_id:
+        raise HTTPException(status_code=403, detail="Accès refusé")
+    service = ActivityService()
+    if year and month:
+        activities = service.get_monthly_activities(user_id, year, month, sport)
+    else:
+        activities = service.get_activites_by_user(user_id, sport)
+    return [
+        {
+            "id": a.id if hasattr(a, "id") else None,
+            "titre": getattr(a, "titre", None),
+            "sport": getattr(a, "sport", None),
+            "distance": getattr(a, "distance", None),
+            "duree": str(getattr(a, "duree", None)),
+            "date_activite": getattr(a, "date_activite", None).isoformat()
+            if getattr(a, "date_activite", None)
+            else None,
+            "lieu": getattr(a, "lieu", None),
+        }
+        for a in activities
+    ]
+
+
+@app.get("/feed")
+def get_feed_endpoint(current_user: dict = Depends(get_current_user)):
+    try:
+        # Calculer le feed ici pour éviter les problèmes du DAO
+        from dao.suivi_dao import SuiviDAO
+        from dao.activity_model import ActivityModel
+        from dao.db_connection import DBConnection
+
+        session = DBConnection().session
+        following = SuiviDAO().get_following(current_user["id"]) or []
+        ids = list(set(following + [current_user["id"]]))
+        activities = (
+            session.query(ActivityModel)
+            .filter(ActivityModel.id_user.in_(ids))
+            .order_by(ActivityModel.date_activite.desc())
+            .all()
+        )
+        return [
+            {
+                "id": a.id,
+                "titre": a.titre,
+                "sport": a.sport,
+                "date_activite": a.date_activite.isoformat() if hasattr(a, "date_activite") else None,
+                "distance": a.distance,
+            }
+            for a in activities
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/stats/monthly")
+def stats_monthly(year: int | None = None, month: int | None = None, current_user: dict = Depends(get_current_user)):
+    svc = StatistiquesService()
+    stats = svc.get_statistiques_mensuelles(current_user["id"], year, month)
+    if stats is None:
+        raise HTTPException(status_code=500, detail="Erreur lors du calcul des statistiques")
+    return stats
+
+
+@app.get("/stats/annual")
+def stats_annual(year: int | None = None, current_user: dict = Depends(get_current_user)):
+    svc = StatistiquesService()
+    stats = svc.get_statistiques_annuelles(current_user["id"], year)
+    if stats is None:
+        raise HTTPException(status_code=500, detail="Erreur lors du calcul des statistiques")
+    return stats
+
+
+@app.get("/stats/global")
+def stats_global(current_user: dict = Depends(get_current_user)):
+    svc = StatistiquesService()
+    stats = svc.get_statistiques_globales(current_user["id"])
+    if stats is None:
+        raise HTTPException(status_code=500, detail="Erreur lors du calcul des statistiques")
+    return stats
+
+
+@app.get("/stats/weekly-average")
+def stats_weekly_average(nb_semaines: int = 4, current_user: dict = Depends(get_current_user)):
+    svc = StatistiquesService()
+    stats = svc.get_moyenne_par_semaine(current_user["id"], nb_semaines)
+    if stats is None:
+        raise HTTPException(status_code=500, detail="Erreur lors du calcul des statistiques")
+    return stats
 
 if __name__ == "__main__":
     import uvicorn
