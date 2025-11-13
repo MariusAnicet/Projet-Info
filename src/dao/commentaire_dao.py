@@ -24,7 +24,7 @@ class CommentaireDAO(metaclass=Singleton):
                     id_user=id_user,
                     id_activite=id_activite,
                     contenu=contenu,
-                    date_commentaire=datetime.now(),
+                    date_comment=datetime.now(),
                 )
                 session.add(commentaire)
                 session.commit()
@@ -59,7 +59,7 @@ class CommentaireDAO(metaclass=Singleton):
                 return (
                     session.query(Commentaire)
                     .filter_by(id_activite=id_activite)
-                    .order_by(Commentaire.date_commentaire.desc())
+                    .order_by(Commentaire.date_comment.desc())
                     .all()
                 )
             except Exception as exc:
@@ -74,7 +74,7 @@ class CommentaireDAO(metaclass=Singleton):
                 return (
                     session.query(Commentaire)
                     .filter_by(id_user=id_user)
-                    .order_by(Commentaire.date_commentaire.desc())
+                    .order_by(Commentaire.date_comment.desc())
                     .all()
                 )
             except Exception as exc:

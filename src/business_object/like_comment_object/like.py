@@ -1,8 +1,5 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer
-from sqlalchemy.ext.declarative import declarative_base
-
-# Base locale pour ce module
-Base = declarative_base()
+from business_object.base import Base
 
 
 class Like(Base):
@@ -10,7 +7,7 @@ class Like(Base):
 
     id_like = Column(Integer, primary_key=True, autoincrement=True)
     id_user = Column(Integer, ForeignKey("utilisateur.id_user"), nullable=False)
-    id_activite = Column(Integer, ForeignKey("activite.id"), nullable=False)
+    id_activite = Column(Integer, ForeignKey("activite.id_activite"), nullable=False)
     date_like = Column(DateTime, nullable=False)
 
     def __init__(self, id_user, id_activite, date_like):

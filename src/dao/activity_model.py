@@ -1,7 +1,5 @@
 from sqlalchemy import Column, DateTime, Float, Integer, String
-from sqlalchemy.orm import declarative_base
-
-Base = declarative_base()
+from business_object.base import Base
 
 
 class ActivityModel(Base):

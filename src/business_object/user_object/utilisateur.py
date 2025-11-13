@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from business_object.base import Base
 import gpxpy
 
 from business_object.Activity_object.course_a_pieds import CoursePied
@@ -9,10 +9,10 @@ from business_object.Activity_object.randonnee import Randonnee
 from business_object.user_object.statistiques import Statistiques
 
 
-from sqlalchemy.ext.declarative import declarative_base
+
 from sqlalchemy import Column, Integer, String
 
-Base = declarative_base()
+
 
 class Utilisateur(Base):
     """

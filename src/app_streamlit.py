@@ -46,7 +46,7 @@ if not st.session_state.authenticated:
         with st.form("login_form"):
             username = st.text_input("Nom d'utilisateur")
             password = st.text_input("Mot de passe", type="password")
-            submit = st.form_submit_button("Se connecter", use_container_width=True)
+            submit = st.form_submit_button("Se connecter", width='stretch')
 
             if submit:
                 try:
@@ -72,7 +72,7 @@ if not st.session_state.authenticated:
             new_email = st.text_input("Email")
             new_password = st.text_input("Mot de passe", type="password")
             confirm_password = st.text_input("Confirmer le mot de passe", type="password")
-            submit_signup = st.form_submit_button("S'inscrire", use_container_width=True)
+            submit_signup = st.form_submit_button("S'inscrire", width='stretch')
 
             if submit_signup:
                 if new_password != confirm_password:
@@ -106,7 +106,7 @@ else:
         st.write(f"**{st.session_state.user_info['username']}**")
         st.write(f"📧 {st.session_state.user_info['email']}")
 
-        if st.button("🚪 Se déconnecter", use_container_width=True):
+        if st.button("🚪 Se déconnecter", width='stretch'):
             st.session_state.authenticated = False
             st.session_state.username = None
             st.session_state.password = None
@@ -193,7 +193,7 @@ else:
                             title="Nombre d'activités par sport",
                             color="Sport",
                         )
-                        st.plotly_chart(fig_activites, use_container_width=True)
+                        st.plotly_chart(fig_activites, width='stretch')
 
                     with col2:
                         fig_distance = px.pie(
@@ -202,7 +202,7 @@ else:
                             names="Sport",
                             title="Répartition des distances par sport",
                         )
-                        st.plotly_chart(fig_distance, use_container_width=True)
+                        st.plotly_chart(fig_distance, width='stretch')
 
             else:
                 st.info(
@@ -421,7 +421,7 @@ else:
                 """)
 
             submit = st.form_submit_button(
-                "Créer l'activité", type="primary", use_container_width=True
+                "Créer l'activité", type="primary", width='stretch'
             )
 
             if submit:
@@ -555,11 +555,11 @@ else:
                                     col1, col2 = st.columns(2)
                                     with col1:
                                         submit_edit = st.form_submit_button(
-                                            "✅ Enregistrer", use_container_width=True
+                                            "✅ Enregistrer", width='stretch'
                                         )
                                     with col2:
                                         cancel_edit = st.form_submit_button(
-                                            "❌ Annuler", use_container_width=True
+                                            "❌ Annuler", width='stretch'
                                         )
 
                                     if submit_edit:
@@ -810,13 +810,13 @@ else:
                         col1, col2 = st.columns(2)
                         with col1:
                             fig = px.bar(df, x="Sport", y="Activités", title="Activités par sport")
-                            st.plotly_chart(fig, use_container_width=True)
+                            st.plotly_chart(fig, width='stretch')
 
                         with col2:
                             fig = px.bar(
                                 df, x="Sport", y="Distance (km)", title="Distance par sport"
                             )
-                            st.plotly_chart(fig, use_container_width=True)
+                            st.plotly_chart(fig, width='stretch')
                 else:
                     st.info("Aucune donnée pour cette période")
 
@@ -881,7 +881,7 @@ else:
                                 names="Sport",
                                 title="Répartition des activités",
                             )
-                            st.plotly_chart(fig, use_container_width=True)
+                            st.plotly_chart(fig, width='stretch')
 
                         with col2:
                             fig = px.pie(
@@ -890,7 +890,7 @@ else:
                                 names="Sport",
                                 title="Répartition des distances",
                             )
-                            st.plotly_chart(fig, use_container_width=True)
+                            st.plotly_chart(fig, width='stretch')
                 else:
                     st.info("Aucune donnée pour cette année")
 
